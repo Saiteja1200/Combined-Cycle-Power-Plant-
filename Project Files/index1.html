@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Prediction Page</title>
+    <style>
+        .header{
+            text-align: center;
+            background-color: blue;
+            color: white;
+            padding: 20px;
+            margin: 10px 70px;
+            border-radius: 30px;
+        }
+        .container{
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body style="display: flex;align-items: center;justify-content: center;">
+    <div style="width: 70%;background-color: rgb(246, 246, 138);">
+        <h2 style="text-align: center;">Power Plant Output Prediction</h2>
+        <div class="container">
+            <div class="header">PREDICTION OF ELECTRICAL OUTPUT POWER OF COMBINED CYCLE POWER PLANT</div>
+            <form id="prediction-form">
+                <label for="AT">Ambient Temperature (AT):</label><br>
+                <input type="text" id="AT" name="AT"><br><br>
+
+                <label for="V">Exhaust Vacuum (V):</label><br>
+                <input type="text" id="V" name="V"><br><br>
+
+                <label for="AP">Ambient Pressure (AP):</label><br>
+                <input type="text" id="AP" name="AP"><br><br>
+
+                <label for="RH">Relative Humidity (RH):</label><br>
+                <input type="text" id="RH" name="RH"><br><br>
+
+                <button type="button" onclick="predict()">Predict</button>
+            </form>
+
+            <h3>Predicted Output: <span id="result"></span></h3>
+
+        </div>
+
+        <script>
+            function predict() {
+                let AT = document.getElementById("AT").value;
+                let V = document.getElementById("V").value;
+                let AP = document.getElementById("AP").value;
+                let RH = document.getElementById("RH").value;
+
+                fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ AT: AT, V: V, AP: AP, RH: RH })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("result").innerText = data["Predicted Power Output"];
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        </script>
+</body>
+
+</html>
